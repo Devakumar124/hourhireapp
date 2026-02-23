@@ -28,8 +28,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('profile'); // profile, explore/post, applications/manage
 
   useEffect(() => {
-    // Restored Canvas-specific background authentication
-    // This is required to get the correct permissions in the Canvas environment
+    // Canvas-specific background authentication
     const initAuth = async () => {
       try {
         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -414,6 +413,75 @@ export default function App() {
                     const clientInfo = profiles.find(p => p.id === job.clientId);
                     
                     return (
+                      <div key={job.id} className="border border-slate-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-md transition-all flex flex-col h-full">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-lg text-slate-800">{job.title}</h3>
+                          <div className="flex items-center gap-2 text-slate-600 mt-1 mb-4">
+                            <Building className="w-4 h-4" />
+                            <span className="font-medium text-sm">{job.restaurantName}</span>
+                          </div>
+                          
+                          <div className="space-y-2 text-sm text-slate-600 mb-6">
+                            <p className="flex items-center gap-2"><DollarSign className="w-4 h-4 text-slate-400" /> {job.pay}</p>
+                            <p className="flex items-center gap-2"><MapPin className="w-4 h-4 text-slate-400" /> {clientInfo?.address || 'Location hidden'}</p>
+                            <p className="flex items-center gap-2"><Users className="w-4 h-4 text-slate-400" /> {job.vacancies} open position(s)</p>
+                          </div>
+                        </div>
+                        
+                        <button 
+                          onClick={() => applyForJob(job.id)}
+                          disabled={hasApplied}
+                          className={`w-full py-2.5 rounded-lg font-medium transition-colors ${hasApplied ? 'bg-green-50 text-green-700 border border-green-200 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                        >
+                          {hasApplied ? 'Applied ✓' : 'Apply Now'}
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'applications' && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h2 className="text-2xl font-bold text-slate-800 mb-6">My Applications</h2>
+                {myApplications.length === 0 ? (
+                  <div className="text-center py-12 text-slate-500">You haven't applied to any jobs yet.</div>
+                ) : (
+                  <div className="space-y-4">
+                    {myApplications.map(app => {
+                      const job = jobs.find(j => j.id === app.jobId);
+                      if (!job) return null; // In case job was deleted
+                      return (
+                        <div key={app.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                          <div>
+                            <h3 className="font-bold text-slate-800">{job.title}</h3>
+                            <p className="text-sm text-slate-600 flex items-center gap-2 mt-1">
+                              <Building className="w-4 h-4" /> {job.restaurantName}
+                            </p>
+                          </div>
+                          <div className="mt-4 sm:mt-0 flex items-center gap-4">
+                            <span className="text-sm text-slate-500 flex items-center gap-1">
+                              <Clock className="w-4 h-4" /> {app.date}
+                            </span>
+                            <span className="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full">
+                              {app.status}
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-200 flex flex-col">
       {/* Top Navbar */}
       <nav className="bg-white border-b border-slate-200 sticky top-0 z-10">
