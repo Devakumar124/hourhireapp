@@ -503,3 +503,45 @@ export default function App() {
     </div>
   );
 }
+
+
+
+
+
+Fire base and DB info
+
+code link: https://gemini.google.com/share/c46da54a2aba
+
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCKHYB7gsGynAR9wByFEHlfF0rcRAymMBM",
+  authDomain: "restohire-415e8.firebaseapp.com",
+  projectId: "restohire-415e8",
+  storageBucket: "restohire-415e8.firebasestorage.app",
+  messagingSenderId: "928936979909",
+  appId: "1:928936979909:web:81f19f979a490bb26d6fac"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+
+
+DB details
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if
+          request.time < timestamp.date(2026, 3, 25);
+    }
+  }
+}
